@@ -33,6 +33,9 @@ def rah_write(appid, d_buf):
     for i in range(0, len(d_buf), MAX_DATA_SIZE):
         sending_len = MAX_DATA_SIZE if i + MAX_DATA_SIZE < len(d_buf) else len(d_buf) - i
         buffer = __get_buffer(appid, sending_len)
+        if buffer is None:
+                raise Exception("Buffer not allocated due to invalid length")
+
         buf_loc = ctypes.c_char_p(buffer)
         data = np.array(d_buf[i:i+sending_len]).ctypes.data_as(ctypes.c_char_p)
         __c.memcpy(buf_loc, data, sending_len)
